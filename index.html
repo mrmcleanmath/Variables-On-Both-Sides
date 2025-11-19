@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Equations with Variables on Both Sides – Mr. McLean Math</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --bg-alt: #ffffff;
+      --text: #222222;
+      --accent: #1976d2;
+      --accent-soft: #e3f2fd;
+      --correct: #2e7d32;
+      --incorrect: #c62828;
+      --border: #cccccc;
+      --panel: #fafafa;
+    }
+
+    body.high-contrast {
+      --bg: #000000;
+      --bg-alt: #111111;
+      --text: #ffffff;
+      --accent: #ffcc00;
+      --accent-soft: #333333;
+      --correct: #00e676;
+      --incorrect: #ff5252;
+      --border: #666666;
+      --panel: #222222;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .subheading {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .mode-toggle,
+    .difficulty-toggle,
+    .timer-controls,
+    .toggles-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn,
+    .difficulty-btn,
+    .small-btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: var(--bg-alt);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.15s, transform 0.05s, border-color 0.15s;
+    }
+
+    .mode-btn.active,
+    .difficulty-btn.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .mode-btn:hover,
+    .difficulty-btn:hover,
+    .small-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-label input {
+      cursor: pointer;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-alt);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
+    }
+
+    .equation-display {
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--panel);
+      margin-bottom: 16px;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .input-row label {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .answer-input {
+      font-size: 1.4rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-width: 120px;
+      max-width: 180px;
+    }
+
+    .answer-input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      font-size: 1rem;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.05s;
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      transform: none;
+    }
+
+    .secondary-btn {
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    .secondary-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .feedback {
+      margin-top: 8px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+    }
+
+    .feedback.correct {
+      color: var(--correct);
+    }
+
+    .feedback.incorrect {
+      color: var(--incorrect);
+    }
+
+    .steps {
+      margin-top: 8px;
+      padding: 8px;
+      background: var(--panel);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .steps-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .timer-display {
+      font-size: 0.9rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--panel);
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .summary-item {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .summary-stat {
+      font-weight: 600;
+    }
+
+    .incorrect-list {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+    }
+
+    .incorrect-item {
+      margin-bottom: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--panel);
+      font-size: 0.75rem;
+      margin-left: 4px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Worksheet mode */
+
+    .mode-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .worksheet-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      font-size: 0.9rem;
+    }
+
+    .worksheet-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .worksheet-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .worksheet-block {
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.95rem;
+      max-height: 430px;
+      overflow-y: auto;
+    }
+
+    .worksheet-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .worksheet-question {
+      margin-bottom: 16px;
+    }
+
+    .answer-key-item {
+      margin-bottom: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      font-size: 0.8rem;
+    }
+
+    /* Dev panel */
+
+    .dev-panel {
+      margin-top: 16px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      font-size: 0.8rem;
+      background: var(--panel);
+      display: none;
+    }
+
+    .dev-panel.visible {
+      display: block;
+    }
+
+    .dev-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .dev-log {
+      max-height: 140px;
+      overflow-y: auto;
+      background: var(--bg-alt);
+      border-radius: 6px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Equations with Variables on Both Sides</h1>
+    <div class="subheading">
+      Solve for x, y, or z. Variables on both sides, three difficulty levels, and worksheet generator.
+    </div>
+
+    <div class="top-bar" aria-label="Main controls">
+      <div class="mode-toggle" role="radiogroup" aria-label="Mode">
+        <button class="mode-btn active" data-mode="game" aria-pressed="true">🎮 Game mode</button>
+        <button class="mode-btn" data-mode="worksheet" aria-pressed="false">📄 Worksheet mode</button>
+      </div>
+
+      <div class="difficulty-toggle" role="radiogroup" aria-label="Difficulty">
+        <span>Difficulty:</span>
+        <button class="difficulty-btn active" data-diff="easy" aria-pressed="true">🟢 Easy</button>
+        <button class="difficulty-btn" data-diff="medium" aria-pressed="false">🟡 Medium</button>
+        <button class="difficulty-btn" data-diff="hard" aria-pressed="false">🔴 Hard</button>
+        <button class="difficulty-btn" data-diff="random" aria-pressed="false">🎲 Random</button>
+      </div>
+
+      <div class="timer-controls">
+        <label class="toggle-label">
+          <input type="checkbox" id="timer-toggle">
+          Timer
+        </label>
+        <select id="timer-select" aria-label="Timer duration">
+          <option value="30">30s</option>
+          <option value="60">60s</option>
+          <option value="90">90s</option>
+          <option value="120">120s</option>
+        </select>
+        <div class="timer-display" id="timer-display">Timer off</div>
+      </div>
+
+      <div class="toggles-group">
+        <label class="toggle-label">
+          <input type="checkbox" id="sound-toggle" checked>
+          Sound
+        </label>
+        <label class="toggle-label">
+          <input type="checkbox" id="contrast-toggle">
+          High contrast
+        </label>
+      </div>
+    </div>
+
+    <div id="game-section">
+      <div class="main-grid">
+        <div class="card" aria-label="Problem and answer area">
+          <div class="equation-display" id="equation-display">
+            Press "New Question" to begin.
+          </div>
+
+          <div class="input-row">
+            <label id="answer-label" for="answer-input">Your answer:</label>
+            <input id="answer-input" class="answer-input" type="text" autocomplete="off">
+            <button id="submit-btn" class="primary-btn">Submit</button>
+            <button id="next-btn" class="secondary-btn" disabled>Next</button>
+          </div>
+          <div class="input-row" style="font-size:0.85rem; opacity:0.8;">
+            <span>Tip: Use <span class="pill">,</span> or <span class="pill">.</span> for decimals. Press <span class="pill">Enter</span> to submit, <span class="pill">Esc</span> to clear.</span>
+          </div>
+
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <button id="show-steps-btn" class="small-btn" disabled>Show steps</button>
+          <div id="steps" class="steps" style="display:none;">
+            <div class="steps-title">Worked solution</div>
+            <div id="steps-content"></div>
+          </div>
+        </div>
+
+        <div class="card" aria-label="Session summary">
+          <h2 style="font-size:1.1rem; margin-bottom:8px;">Session summary</h2>
+          <div class="summary-item">Questions attempted: <span class="summary-stat" id="stat-attempted">0</span></div>
+          <div class="summary-item">Correct: <span class="summary-stat" id="stat-correct">0</span></div>
+          <div class="summary-item">Accuracy: <span class="summary-stat" id="stat-accuracy">0%</span></div>
+          <div class="summary-item">Score: <span class="summary-stat" id="stat-score">0</span></div>
+          <div class="summary-item">Current streak: <span class="summary-stat" id="stat-streak">0</span></div>
+          <div class="summary-item">Best streak: <span class="summary-stat" id="stat-best-streak">0</span></div>
+
+          <button id="toggle-incorrect-btn" class="small-btn" style="margin-top:8px;">Show incorrect questions</button>
+          <div id="incorrect-list" class="incorrect-list" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="worksheet-section" style="display:none;">
+      <div class="card">
+        <div class="mode-header">
+          <h2 style="font-size:1.1rem;">Worksheet generator</h2>
+          <div class="worksheet-controls">
+            <label>Difficulty:
+              <select id="ws-diff">
+                <option value="easy">🟢 Easy</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="hard">🔴 Hard</option>
+                <option value="random">🎲 Random</option>
+              </select>
+            </label>
+            <label>Questions:
+              <select id="ws-count">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+              </select>
+            </label>
+            <button id="ws-generate-btn" class="primary-btn">Generate worksheet</button>
+          </div>
+        </div>
+        <div class="worksheet-grid">
+          <div class="worksheet-block" aria-label="Worksheet questions">
+            <div class="worksheet-title">Questions</div>
+            <div style="font-size:0.85rem; margin-bottom:6px;">Solve each equation. Show your working.</div>
+            <div id="ws-questions"></div>
+          </div>
+          <div class="worksheet-block" aria-label="Answer key">
+            <div class="worksheet-title">
+              Answer key
+              <span class="tag" id="ws-key-status">Hidden</span>
+            </div>
+            <div style="margin-bottom:6px;">
+              <button id="ws-show-all" class="small-btn">Reveal all</button>
+              <button id="ws-hide-all" class="small-btn">Hide all</button>
+            </div>
+            <div id="ws-answers"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dev-panel" class="dev-panel" aria-label="Developer tests">
+      <div><strong>Developer tests (?dev=1)</strong></div>
+      <div class="dev-buttons">
+        <button class="small-btn" data-dev-test="easy100">Test 100 easy equations</button>
+        <button class="small-btn" data-dev-test="medium100">Test 100 medium equations</button>
+        <button class="small-btn" data-dev-test="hard100">Test 100 hard equations</button>
+        <button class="small-btn" data-dev-test="negatives">Check for negative solutions</button>
+        <button class="small-btn" data-dev-test="random-mix">Check random difficulty mix</button>
+        <button class="small-btn" data-dev-test="decimals">Check decimal formatting</button>
+        <button class="small-btn" data-dev-test="worksheet">Check worksheet mapping</button>
+        <button class="small-btn" data-dev-test="no-auto-advance">Check no auto-advance</button>
+        <button class="small-btn" data-dev-test="streak">Check streak & score</button>
+      </div>
+      <div class="dev-log" id="dev-log"></div>
+    </div>
+
+    <div class="footer">
+      Created by Mr. McLean Math.
+    </div>
+  </div>
+
+  <script>
+    // ---------- Number formatting: spaces for thousands, optional 1-decimal ----------
+    function formatNumber(num, decimalsAllowed) {
+      const negative = num < 0;
+      let value = Math.abs(num);
+
+      let useDecimals = false;
+      if (decimalsAllowed) {
+        value = Math.round(value * 10) / 10;
+        if (Math.abs(value - Math.round(value)) > 1e-9) {
+          useDecimals = true;
+        }
+      } else {
+        value = Math.round(value);
+      }
+
+      let intPart = useDecimals ? Math.floor(value).toString() : Math.round(value).toString();
+      let decPart = "";
+      if (useDecimals) {
+        const raw = value.toFixed(1);
+        decPart = raw.split(".")[1] || "";
+      }
+
+      let resultInt = "";
+      for (let i = 0; i < intPart.length; i++) {
+        const posFromRight = intPart.length - i - 1;
+        resultInt += intPart[i];
+        if (posFromRight > 0 && posFromRight % 3 === 0) {
+          resultInt += " ";
+        }
+      }
+
+      let finalStr = resultInt;
+      if (useDecimals) finalStr += "." + decPart;
+      if (negative) finalStr = "-" + finalStr;
+      return finalStr;
+    }
+
+    // ---------- Simple beep ----------
+    let audioContext = null;
+    let soundEnabled = true;
+    function playBeep(freq) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.12, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.12);
+      } catch (e) {}
+    }
+
+    // ---------- Random helpers ----------
+    function randomChoice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ---------- Expression formatting helpers ----------
+    function termVar(coeff, variable, decimalsAllowed) {
+      const absC = Math.abs(coeff);
+      let coeffStr = "";
+      if (Math.abs(absC - 1) < 1e-9) {
+        coeffStr = "";
+      } else {
+        coeffStr = formatNumber(absC, decimalsAllowed);
+      }
+      const sign = coeff < 0 ? "-" : "";
+      return sign + coeffStr + variable;
+    }
+
+    function appendConst(expr, constant, decimalsAllowed) {
+      if (constant > 0) {
+        return expr + " + " + formatNumber(constant, decimalsAllowed);
+      } else if (constant < 0) {
+        return expr + " - " + formatNumber(Math.abs(constant), decimalsAllowed);
+      }
+      return expr;
+    }
+
+    function sideSimple(a, b, variable, decimalsAllowed) {
+      let side = termVar(a, variable, decimalsAllowed);
+      side = appendConst(side, b, decimalsAllowed);
+      return side;
+    }
+
+    function sideTwoVars(a1, a2, b, variable, decimalsAllowed) {
+      let side = termVar(a1, variable, decimalsAllowed);
+      side += " + " + termVar(a2, variable, decimalsAllowed);
+      side = appendConst(side, b, decimalsAllowed);
+      return side;
+    }
+
+    function buildStepsBothSides(originalHtml, A, BLeft, C, BRight, variable, decimalsAllowed, solution) {
+      const steps = [];
+      steps.push(originalHtml);
+
+      let leftCombined = sideSimple(A, BLeft, variable, decimalsAllowed);
+      let rightCombined = sideSimple(C, BRight, variable, decimalsAllowed);
+      steps.push(leftCombined + " = " + rightCombined);
+
+      const AminusC = A - C;
+      const leftAfterMoveVar = sideSimple(AminusC, BLeft, variable, decimalsAllowed);
+      steps.push(leftAfterMoveVar + " = " + formatNumber(BRight, decimalsAllowed));
+
+      const constRight = BRight - BLeft;
+      steps.push(termVar(AminusC, variable, decimalsAllowed) + " = " + formatNumber(constRight, decimalsAllowed));
+      steps.push(
+        variable +
+          " = " +
+          formatNumber(constRight, decimalsAllowed) +
+          " / " +
+          formatNumber(AminusC, decimalsAllowed)
+      );
+      steps.push(variable + " = " + formatNumber(solution, decimalsAllowed));
+      return steps.join("<br>");
+    }
+
+    // ---------- Question generators ----------
+
+    // Easy: ax + b = cx + d (integers only, NO negatives anywhere, non-negative solution)
+    function generateEasyQuestion() {
+      const variable = randomChoice(["x", "y", "z"]);
+      while (true) {
+        const solution = randomInt(0, 15);
+
+        const a = randomInt(2, 6);
+        const c = randomInt(1, a - 1);
+
+        const b = randomInt(1, 20);
+
+        const d = a * solution + b - c * solution;
+        if (!Number.isFinite(d)) continue;
+        if (d <= 0) continue;
+        if (d > 20) continue;
+
+        const leftExpr = sideSimple(a, b, variable, false);
+        const rightExpr = sideSimple(c, d, variable, false);
+        const html = leftExpr + " = " + rightExpr;
+
+        const stepsHtml = buildStepsBothSides(html, a, b, c, d, variable, false, solution);
+
+        return {
+          html,
+          variable,
+          solution,
+          stepsHtml,
+          raw: { pattern: "easy", a, b, c, d }
+        };
+      }
+    }
+
+    // Medium: some equations already fairly simple, some clearly require simplifying
+    // (combining like terms) on BOTH sides. Non-negative solutions, no dividing negatives.
+    function generateMediumQuestion() {
+      const variable = randomChoice(["x", "y", "z"]);
+      while (true) {
+        const solution = randomInt(0, 15);
+
+        // Decide if this one should clearly require simplifying on both sides
+        const wantBothSidesLike = Math.random() < 0.6; // ~60% of medium questions
+
+        let A, C;
+        if (wantBothSidesLike) {
+          // Need A >= 3 and C >= 2 so we can split both into two positive parts
+          A = randomInt(3, 8);
+          C = randomInt(2, A - 1); // ensures A > C
+        } else {
+          A = randomInt(2, 8);
+          C = randomInt(1, A - 1); // ensures A > C
+        }
+
+        const BLeft = randomInt(-20, 20);
+        const BRight = A * solution + BLeft - C * solution;
+        if (!Number.isFinite(BRight)) continue;
+        if (Math.abs(BRight) > 20) continue;
+
+        // Split A into two positive ints for the left side (like terms)
+        const a1 = randomInt(1, A - 1);
+        const a2 = A - a1;
+
+        let rightExpr;
+        if (wantBothSidesLike && C >= 2) {
+          // Split C as well, so both sides clearly have like terms
+          const c1 = randomInt(1, C - 1);
+          const c2 = C - c1;
+          rightExpr = sideTwoVars(c1, c2, BRight, variable, false);
+        } else {
+          // Right side already "simplified" in variable terms
+          rightExpr = sideSimple(C, BRight, variable, false);
+        }
+
+        const leftExpr = sideTwoVars(a1, a2, BLeft, variable, false);
+        const html = leftExpr + " = " + rightExpr;
+
+        const stepsHtml = buildStepsBothSides(html, A, BLeft, C, BRight, variable, false, solution);
+
+        return {
+          html,
+          variable,
+          solution,
+          stepsHtml,
+          raw: { pattern: "medium", A, BLeft, C, BRight }
+        };
+      }
+    }
+
+    // Hard: like terms on both sides + decimals, non-negative solution,
+    // no multiplying/dividing negatives (A > C, solution >= 0).
+    function generateHardQuestion() {
+      const variable = randomChoice(["x", "y", "z"]);
+      const coeffList = [0.5, 1, 1.5, 2, 2.5, 3];
+
+      while (true) {
+        const solution = randomInt(0, 20) / 2; // 0 to 10, step 0.5
+
+        const a1 = randomChoice(coeffList);
+        const a2 = randomChoice(coeffList);
+        const c1 = randomChoice(coeffList);
+        const c2 = randomChoice(coeffList);
+        const A = a1 + a2;
+        const C = c1 + c2;
+
+        if (A <= C) continue;
+
+        const BLeft = randomInt(-10, 10);
+        const rawBR = A * solution + BLeft - C * solution;
+        if (!Number.isFinite(rawBR)) continue;
+        if (Math.abs(rawBR) > 30) continue;
+
+        const BR10 = Math.round(rawBR * 10);
+        if (Math.abs(rawBR * 10 - BR10) > 1e-6) continue;
+        const BRight = BR10 / 10;
+
+        const leftExpr = sideTwoVars(a1, a2, BLeft, variable, true);
+        const rightExpr = sideTwoVars(c1, c2, BRight, variable, true);
+        const html = leftExpr + " = " + rightExpr;
+
+        const stepsHtml = buildStepsBothSides(html, A, BLeft, C, BRight, variable, true, solution);
+
+        return {
+          html,
+          variable,
+          solution,
+          stepsHtml,
+          raw: { pattern: "hard", A, BLeft, C, BRight }
+        };
+      }
+    }
+
+    function generateQuestionByDifficulty(diff) {
+      if (diff === "easy") return generateEasyQuestion();
+      if (diff === "medium") return generateMediumQuestion();
+      if (diff === "hard") return generateHardQuestion();
+      const pick = randomChoice(["easy", "medium", "hard"]);
+      return generateQuestionByDifficulty(pick);
+    }
+
+    // ---------- Game state ----------
+    let currentDifficulty = "easy";
+    let currentMode = "game";
+    let currentQuestion = null;
+
+    let attempted = 0;
+    let correct = 0;
+    let score = 0;
+    let streak = 0;
+    let bestStreak = 0;
+    let incorrectQuestions = [];
+
+    let timerEnabled = false;
+    let timerDuration = 30;
+    let timerRemaining = 0;
+    let timerInterval = null;
+
+    // ---------- DOM refs ----------
+    const equationDisplay = document.getElementById("equation-display");
+    const answerInput = document.getElementById("answer-input");
+    const submitBtn = document.getElementById("submit-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const feedbackEl = document.getElementById("feedback");
+    const stepsEl = document.getElementById("steps");
+    const stepsContentEl = document.getElementById("steps-content");
+    const showStepsBtn = document.getElementById("show-steps-btn");
+    const answerLabel = document.getElementById("answer-label");
+
+    const statAttempted = document.getElementById("stat-attempted");
+    const statCorrect = document.getElementById("stat-correct");
+    const statAccuracy = document.getElementById("stat-accuracy");
+    const statScore = document.getElementById("stat-score");
+    const statStreak = document.getElementById("stat-streak");
+    const statBestStreak = document.getElementById("stat-best-streak");
+    const incorrectListEl = document.getElementById("incorrect-list");
+    const toggleIncorrectBtn = document.getElementById("toggle-incorrect-btn");
+
+    const timerToggle = document.getElementById("timer-toggle");
+    const timerSelect = document.getElementById("timer-select");
+    const timerDisplay = document.getElementById("timer-display");
+    const soundToggle = document.getElementById("sound-toggle");
+    const contrastToggle = document.getElementById("contrast-toggle");
+
+    const gameSection = document.getElementById("game-section");
+    const worksheetSection = document.getElementById("worksheet-section");
+
+    const wsDiff = document.getElementById("ws-diff");
+    const wsCount = document.getElementById("ws-count");
+    const wsGenerateBtn = document.getElementById("ws-generate-btn");
+    const wsQuestions = document.getElementById("ws-questions");
+    const wsAnswers = document.getElementById("ws-answers");
+    const wsShowAll = document.getElementById("ws-show-all");
+    const wsHideAll = document.getElementById("ws-hide-all");
+    const wsKeyStatus = document.getElementById("ws-key-status");
+
+    const devPanel = document.getElementById("dev-panel");
+    const devLog = document.getElementById("dev-log");
+
+    // ---------- Mode, difficulty, toggles ----------
+    document.querySelectorAll(".difficulty-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".difficulty-btn").forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        currentDifficulty = btn.dataset.diff;
+        if (currentMode === "game") generateNewQuestion();
+      });
+    });
+
+    document.querySelectorAll(".mode-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".mode-btn").forEach(b => {
+          b.classList.remove("active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-pressed", "true");
+        currentMode = btn.dataset.mode;
+        if (currentMode === "game") {
+          gameSection.style.display = "";
+          worksheetSection.style.display = "none";
+          answerInput.focus();
+        } else {
+          gameSection.style.display = "none";
+          worksheetSection.style.display = "";
+        }
+      });
+    });
+
+    function updateTimerDisplay() {
+      if (!timerEnabled) {
+        timerDisplay.textContent = "Timer off";
+      } else {
+        timerDisplay.textContent = timerRemaining + "s";
+      }
+    }
+
+    function startTimer() {
+      if (!timerEnabled) return;
+      clearInterval(timerInterval);
+      timerRemaining = timerDuration;
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        timerRemaining -= 1;
+        if (timerRemaining <= 0) {
+          timerRemaining = 0;
+          clearInterval(timerInterval);
+          timerDisplay.textContent = "Time's up";
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    timerToggle.addEventListener("change", () => {
+      timerEnabled = timerToggle.checked;
+      if (!timerEnabled) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = "Timer off";
+      } else {
+        timerDuration = parseInt(timerSelect.value, 10);
+        startTimer();
+      }
+    });
+
+    timerSelect.addEventListener("change", () => {
+      timerDuration = parseInt(timerSelect.value, 10);
+      if (timerEnabled) startTimer();
+    });
+
+    soundToggle.addEventListener("change", () => {
+      soundEnabled = soundToggle.checked;
+    });
+
+    contrastToggle.addEventListener("change", () => {
+      if (contrastToggle.checked) {
+        document.body.classList.add("high-contrast");
+      } else {
+        document.body.classList.remove("high-contrast");
+      }
+    });
+
+    // ---------- Game logic ----------
+    function generateNewQuestion() {
+      currentQuestion = generateQuestionByDifficulty(currentDifficulty);
+      equationDisplay.innerHTML = currentQuestion.html;
+      answerLabel.textContent = "Solve for " + currentQuestion.variable + ":";
+      answerInput.value = "";
+      answerInput.disabled = false;
+      submitBtn.disabled = false;
+      nextBtn.disabled = true;
+      feedbackEl.textContent = "";
+      feedbackEl.className = "feedback";
+      showStepsBtn.disabled = true;
+      stepsEl.style.display = "none";
+      stepsContentEl.innerHTML = "";
+      if (timerEnabled) startTimer();
+      answerInput.focus();
+    }
+
+    function parseUserAnswer(text) {
+      const trimmed = text.replace(/\s+/g, "").replace(",", ".");
+      if (!trimmed) return null;
+      const value = parseFloat(trimmed);
+      if (!isFinite(value)) return null;
+      return value;
+    }
+
+    function checkAnswer() {
+      if (!currentQuestion) {
+        generateNewQuestion();
+        return;
+      }
+      const userVal = parseUserAnswer(answerInput.value);
+      if (userVal === null) {
+        feedbackEl.textContent = "Please enter a number.";
+        feedbackEl.className = "feedback incorrect";
+        playBeep(250);
+        return;
+      }
+
+      const correctVal = currentQuestion.solution;
+      const diff = Math.abs(userVal - correctVal);
+      attempted++;
+
+      if (diff < 1e-3) {
+        correct++;
+        score += 10;
+        streak++;
+        if (streak > 0 && streak % 5 === 0) score += 5;
+        if (streak > bestStreak) bestStreak = streak;
+
+        feedbackEl.textContent = "Correct!";
+        feedbackEl.className = "feedback correct";
+        playBeep(880);
+        answerInput.disabled = true;
+        submitBtn.disabled = true;
+        nextBtn.disabled = false;
+        showStepsBtn.disabled = false;
+      } else {
+        streak = 0;
+        feedbackEl.textContent = "Not quite. Try again, or click 'Show steps'.";
+        feedbackEl.className = "feedback incorrect";
+        playBeep(200);
+        showStepsBtn.disabled = false;
+
+        incorrectQuestions.push({
+          equationHtml: currentQuestion.html,
+          correct: correctVal,
+          variable: currentQuestion.variable
+        });
+      }
+      updateStats();
+    }
+
+    function updateStats() {
+      statAttempted.textContent = attempted;
+      statCorrect.textContent = correct;
+      const accuracy = attempted === 0 ? 0 : Math.round((correct / attempted) * 100);
+      statAccuracy.textContent = accuracy + "%";
+      statScore.textContent = score;
+      statStreak.textContent = streak;
+      statBestStreak.textContent = bestStreak;
+
+      if (incorrectListEl.style.display !== "none") {
+        renderIncorrectList();
+      }
+    }
+
+    function renderIncorrectList() {
+      incorrectListEl.innerHTML = "";
+      if (incorrectQuestions.length === 0) {
+        incorrectListEl.innerHTML = "<div>No incorrect questions yet.</div>";
+        return;
+      }
+      incorrectQuestions.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "incorrect-item";
+        div.innerHTML =
+          (idx + 1) +
+          ". " +
+          item.equationHtml +
+          " &nbsp;⇒&nbsp; " +
+          item.variable +
+          " = " +
+          formatNumber(item.correct, true);
+        incorrectListEl.appendChild(div);
+      });
+    }
+
+    submitBtn.addEventListener("click", checkAnswer);
+    nextBtn.addEventListener("click", generateNewQuestion);
+
+    answerInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        if (!submitBtn.disabled) {
+          checkAnswer();
+        } else if (!nextBtn.disabled) {
+          generateNewQuestion();
+        }
+      } else if (e.key === "Escape") {
+        answerInput.value = "";
+      }
+    });
+
+    showStepsBtn.addEventListener("click", () => {
+      if (!currentQuestion) return;
+      stepsContentEl.innerHTML = currentQuestion.stepsHtml;
+      stepsEl.style.display = "";
+    });
+
+    toggleIncorrectBtn.addEventListener("click", () => {
+      if (incorrectListEl.style.display === "none") {
+        incorrectListEl.style.display = "";
+        toggleIncorrectBtn.textContent = "Hide incorrect questions";
+        renderIncorrectList();
+      } else {
+        incorrectListEl.style.display = "none";
+        toggleIncorrectBtn.textContent = "Show incorrect questions";
+      }
+    });
+
+    // ---------- Worksheet mode ----------
+    function generateWorksheet() {
+      const count = parseInt(wsCount.value, 10);
+      const diff = wsDiff.value;
+
+      wsQuestions.innerHTML = "";
+      wsAnswers.innerHTML = "";
+      wsKeyStatus.textContent = "Hidden";
+
+      const questions = [];
+      for (let i = 0; i < count; i++) {
+        questions.push(generateQuestionByDifficulty(diff));
+      }
+
+      questions.forEach((q, index) => {
+        const qDiv = document.createElement("div");
+        qDiv.className = "worksheet-question";
+        qDiv.innerHTML =
+          "<div><strong>Solve:</strong></div><div>" +
+          q.html +
+          "</div>";
+        wsQuestions.appendChild(qDiv);
+
+        const aDiv = document.createElement("div");
+        aDiv.className = "answer-key-item";
+        aDiv.dataset.answerIndex = index;
+        aDiv.style.display = "none";
+        aDiv.innerHTML =
+          (index + 1) +
+          ") " +
+          q.variable +
+          " = " +
+          formatNumber(q.solution, true);
+        wsAnswers.appendChild(aDiv);
+      });
+    }
+
+    wsGenerateBtn.addEventListener("click", generateWorksheet);
+
+    wsShowAll.addEventListener("click", () => {
+      Array.from(wsAnswers.children).forEach(child => {
+        child.style.display = "";
+      });
+      wsKeyStatus.textContent = "Shown";
+    });
+
+    wsHideAll.addEventListener("click", () => {
+      Array.from(wsAnswers.children).forEach(child => {
+        child.style.display = "none";
+      });
+      wsKeyStatus.textContent = "Hidden";
+    });
+
+    // ---------- Dev tools ----------
+    function logDev(msg) {
+      const now = new Date().toISOString().split("T")[1].replace("Z", "");
+      devLog.textContent += "[" + now + "] " + msg + "\n";
+      devLog.scrollTop = devLog.scrollHeight;
+    }
+
+    function testGenerateMany(diff, n) {
+      let ok = 0;
+      let failures = 0;
+      for (let i = 0; i < n; i++) {
+        try {
+          const q = generateQuestionByDifficulty(diff);
+          if (!isFinite(q.solution)) {
+            failures++;
+          } else {
+            ok++;
+          }
+        } catch (e) {
+          failures++;
+        }
+      }
+      logDev("Test " + diff + " x" + n + ": OK=" + ok + ", failures=" + failures);
+    }
+
+    function testNegatives() {
+      ["easy", "medium", "hard"].forEach(diff => {
+        let negCount = 0;
+        for (let i = 0; i < 50; i++) {
+          const q = generateQuestionByDifficulty(diff);
+          if (q.solution < 0) negCount++;
+        }
+        logDev("Negative solutions in " + diff + ": " + negCount + "/50");
+      });
+    }
+
+    function testRandomMix() {
+      const counts = { easy: 0, medium: 0, hard: 0 };
+      for (let i = 0; i < 60; i++) {
+        const q = generateQuestionByDifficulty("random");
+        if (!q.raw || !q.raw.pattern) continue;
+        if (q.raw.pattern === "easy") counts.easy++;
+        if (q.raw.pattern === "medium") counts.medium++;
+        if (q.raw.pattern === "hard") counts.hard++;
+      }
+      logDev("Random mix approx: " + JSON.stringify(counts));
+    }
+
+    function testDecimalFormatting() {
+      const q = generateHardQuestion();
+      logDev("Hard example: " + q.html + " (solution " + q.solution + ")");
+    }
+
+    function testWorksheetMapping() {
+      wsDiff.value = "easy";
+      wsCount.value = "5";
+      generateWorksheet();
+      logDev(
+        "Worksheet mapping: " +
+          wsQuestions.children.length +
+          " questions, " +
+          wsAnswers.children.length +
+          " answers."
+      );
+    }
+
+    function testNoAutoAdvance() {
+      logDev("Manual check: After correct answer, Next must be pressed (submit disabled).");
+    }
+
+    function testStreakScore() {
+      attempted = 0;
+      correct = 0;
+      score = 0;
+      streak = 0;
+      bestStreak = 0;
+      updateStats();
+      for (let i = 0; i < 5; i++) {
+        attempted++;
+        correct++;
+        score += 10;
+        streak++;
+        if (streak > 0 && streak % 5 === 0) score += 5;
+        if (streak > bestStreak) bestStreak = streak;
+      }
+      updateStats();
+      logDev("After 5 correct: score=" + score + ", streak=" + streak + " (expect 55).");
+    }
+
+    devPanel.addEventListener("click", e => {
+      const btn = e.target.closest("button[data-dev-test]");
+      if (!btn) return;
+      const name = btn.dataset.devTest;
+      if (name === "easy100") testGenerateMany("easy", 100);
+      if (name === "medium100") testGenerateMany("medium", 100);
+      if (name === "hard100") testGenerateMany("hard", 100);
+      if (name === "negatives") testNegatives();
+      if (name === "random-mix") testRandomMix();
+      if (name === "decimals") testDecimalFormatting();
+      if (name === "worksheet") testWorksheetMapping();
+      if (name === "no-auto-advance") testNoAutoAdvance();
+      if (name === "streak") testStreakScore();
+    });
+
+    function initDevMode() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("dev") === "1") {
+        devPanel.classList.add("visible");
+        logDev("Developer mode enabled.");
+      }
+    }
+
+    // ---------- Init ----------
+    function init() {
+      soundEnabled = soundToggle.checked;
+      timerEnabled = timerToggle.checked;
+      timerDuration = parseInt(timerSelect.value, 10);
+      generateNewQuestion();
+      initDevMode();
+    }
+
+    window.addEventListener("load", init);
+  </script>
+</body>
+</html>
