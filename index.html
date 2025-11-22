@@ -400,7 +400,7 @@
   <div class="container">
     <h1>Equations with Variables on Both Sides</h1>
     <div class="subheading">
-      Solve for x, y, or z. Variables on both sides, three difficulty levels, and worksheet generator.
+      Solve for x, y, or k. Variables on both sides, three difficulty levels, and worksheet generator.
     </div>
 
     <div class="top-bar" aria-label="Main controls">
@@ -679,7 +679,7 @@
 
     // Easy: ax + b = cx + d (integers only, NO negatives anywhere, non-negative solution)
     function generateEasyQuestion() {
-      const variable = randomChoice(["x", "y", "z"]);
+      const variable = randomChoice(["x", "y", "k"]);
       while (true) {
         const solution = randomInt(0, 15);
 
@@ -712,7 +712,7 @@
     // Medium: some equations already fairly simple, some clearly require simplifying
     // (combining like terms) on BOTH sides. Non-negative solutions, no dividing negatives.
     function generateMediumQuestion() {
-      const variable = randomChoice(["x", "y", "z"]);
+      const variable = randomChoice(["x", "y", "k"]);
       while (true) {
         const solution = randomInt(0, 15);
 
@@ -767,7 +767,7 @@
     // Hard: like terms on both sides + decimals, non-negative solution,
     // no multiplying/dividing negatives (A > C, solution >= 0).
     function generateHardQuestion() {
-      const variable = randomChoice(["x", "y", "z"]);
+      const variable = randomChoice(["x", "y", "k"]);
       const coeffList = [0.5, 1, 1.5, 2, 2.5, 3];
 
       while (true) {
